@@ -1,1 +1,1 @@
-"""Paquete de simulación de la APE. Reemplazar el modelo de ejemplo por el sistema de la práctica."""
+"""Simulación de un sistema de líneas de espera M/M/1 (caja rápida de supermercado) con SimPy."""
