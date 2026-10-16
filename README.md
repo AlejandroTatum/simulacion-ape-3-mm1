@@ -1,68 +1,95 @@
 # APE 3 — Simulación de un sistema de líneas de espera M/M/1 mediante SimPy
 
-Práctica grupal de la asignatura Simulación (Carrera de Computación, Universidad Nacional de Loja).
-Docente: Ing. José O. Guamán Q. — Unidad 1: Introducción a la Simulación.
+| | |
+| --- | --- |
+| **Asignatura** | Simulación — Universidad Nacional de Loja |
+| **Docente** | Ing. José Guamán |
+| **Unidad** | U1: Introducción a la Simulación |
+| **Práctica** | 03 — Simulación de un sistema de líneas de espera M/M/1 |
+| **Modalidad** | Grupal |
+| **Informe** | [documento/](documento/) |
+| **Bibliografía** | [referencias.bib](referencias.bib) |
 
 ## Integrantes
 
 | Integrante | Responsabilidad |
 | --- | --- |
-| <Nombre 1> | <parte a cargo> |
+| Alejandro Padilla | Código: modelo M/M/1 en SimPy, métricas teóricas, gráficas y pantalla en vivo. |
 | <Nombre 2> | <parte a cargo> |
 | <Nombre 3> | <parte a cargo> |
 
 ## 1. Enunciado y objetivo
 
-Simular un sistema de líneas de espera M/M/1 utilizando Python y SimPy, analizando el comportamiento de los
-clientes, la cola y el servidor.
+Simular un sistema de líneas de espera M/M/1 con Python y SimPy, y analizar el comportamiento de los clientes, la cola y el servidor. El sistema real modelado es la **caja rápida de un supermercado**: los clientes llegan según un proceso de Poisson (tasa λ), forman una fila única FIFO y una sola cajera los atiende con tiempos exponenciales (tasa μ). La unidad de tiempo es el minuto.
 
-- Implementar un modelo M/M/1 utilizando la biblioteca SimPy.
-- Calcular las principales métricas teóricas del sistema de espera (ρ, L, Lq, W, Wq).
-- Comparar los resultados teóricos con los obtenidos mediante la simulación.
+- Implementar un modelo M/M/1 con la biblioteca SimPy.
+- Calcular las métricas teóricas del sistema: $\rho = \lambda/\mu$, $L$, $L_q$, $W$ y $W_q$.
+- Comparar los resultados teóricos con los simulados en los tres escenarios de la guía (λ = 2.0, 2.5 y 2.9; μ = 3.0).
 
 ## 2. Herramientas de IA
 
 | Herramienta | Uso |
 | --- | --- |
-| <modelo / agente> | <para qué se usó> |
+| Agente de programación el Gentleman (Pi) con modelo Claude | Lectura de la guía, modelo SimPy, fórmulas teóricas, pruebas, gráficas y pantalla en vivo. |
+| <modelo / agente de otro integrante> | <para qué se usó> |
+
+La IA ejecutó; las decisiones de modelo, formato y contenido las tomó el grupo en cada iteración.
 
 ## 3. Proceso con IA
 
-1. <Título de la iteración 1>
-2. <Título de la iteración 2>
+1. Entender la guía
+2. Modelo SimPy y métricas teóricas
+3. Arquitectura MVC
+4. Gráficas y pantalla en vivo
+5. <Título de la iteración del informe>
 
 ## 4. Errores de la IA y correcciones
 
+- **Utilización invertida en la guía:** el fundamento teórico escribe la utilización como μ/λ; se usó ρ = λ/μ, que es lo que indica el pseudocódigo de la guía y lo que da valores menores que 1 en los tres escenarios.
 - <respuesta incorrecta> → <cómo se detectó y corrigió>
 
 ## 5. Arquitectura del código
 
 ```text
 codigo/simulacion_ape/
-├── __main__.py                  # Delgado: solo llama al controlador
-├── model/
-│   ├── config.py                # Parámetros de la simulación (λ, μ, tiempo, semilla)
-│   ├── dice.py                  # Entidades y reglas del sistema
-│   ├── simulation.py            # Motor de ejecución de corridas
-│   └── analysis.py              # Estadísticas de resultados
-├── view/
-│   └── console_view.py          # Salida de resultados (tablas, gráficas)
+├── __main__.py                  # Punto de entrada: solo llama al controlador
+├── model/                       # Datos y lógica, sin imprimir ni graficar
+│   ├── config.py                # Escenarios (λ, μ), tiempo simulado y semilla
+│   ├── queue_system.py          # Modelo SimPy: llegadas, fila FIFO y una caja
+│   ├── theory.py                # Fórmulas M/M/1 y condición de estabilidad λ < μ
+│   ├── analysis.py              # Métricas simuladas (en el tiempo y por cliente)
+│   ├── state.py                 # Estado del sistema en un instante
+│   └── simulation.py            # Corre un escenario y reúne teoría y simulación
+├── view/                        # Presentación, sin cálculos del modelo
+│   ├── console_view.py          # Tabla comparativa en consola
+│   ├── chart_view.py            # Gráficas estáticas para el informe
+│   ├── html_view.py             # Pantalla en vivo con los registros de SimPy
+│   └── assets/                  # Plantilla HTML, lógica JS y tipografía
 └── controller/
-    └── simulation_controller.py # Orquesta modelo y vistas
+    └── simulation_controller.py # Opciones de línea de comandos y orquestación
 ```
 
-<Justificación de la arquitectura elegida.>
+MVC separa los cálculos de la presentación: se puede cambiar un escenario en `model/config.py` sin tocar las gráficas, y probar el modelo sin generar ninguna figura. La pantalla en vivo no simula por su cuenta: reproduce los registros de SimPy, y una prueba comprueba que lo que muestra coincide con el modelo en Python. El detalle de opciones y controles está en [codigo/README.md](codigo/README.md).
 
 ## 6. Ejecución
 
 ```bash
 cd codigo
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m simulacion_ape
-pytest
+python -m simulacion_ape         # tabla, gráficas en resultados/ y pantalla en vivo en el navegador
+pytest                           # 15 pruebas
 ```
 
 ## 7. Resultados
 
-<Resultados principales y su interpretación. El detalle está en `documento/`.>
+Corrida de 20 000 minutos por escenario con semilla 42.
+
+| Escenario | ρ teórico / simulado | L teórico / simulado | W teórico / simulado (min) | Error máximo |
+| --- | --- | --- | --- | --- |
+| 1. Estable (λ = 2.0) | 0.667 / 0.670 | 2.000 / 2.036 | 1.000 / 1.022 | 2.8 % |
+| 2. Mayor utilización (λ = 2.5) | 0.833 / 0.835 | 5.000 / 5.029 | 2.000 / 2.016 | 0.9 % |
+| 3. Cerca de saturación (λ = 2.9) | 0.967 / 0.968 | 29.000 / 26.592 | 10.000 / 9.183 | 8.6 % |
+
+La simulación reproduce la teoría con errores menores al 3 % en los dos primeros escenarios. Al acercarse ρ a 1, la cola y la espera crecen de forma no lineal (L pasa de 2 a 29 clientes) y la simulación tarda mucho más en llegar al estado estable, por eso el error del escenario 3 es mayor. El análisis completo está en el informe de `documento/`.
