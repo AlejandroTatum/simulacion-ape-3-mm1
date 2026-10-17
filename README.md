@@ -14,9 +14,10 @@
 
 | Integrante | Responsabilidad |
 | --- | --- |
-| Alejandro Padilla | Código: modelo M/M/1 en SimPy, métricas teóricas, gráficas y pantalla en vivo. |
-| <Nombre 2> | <parte a cargo> |
-| <Nombre 3> | <parte a cargo> |
+| Andrés Tapia | Trabajo compartido: modelo M/M/1 en SimPy, ventana en vivo, pruebas e informe. |
+| Ariel González | Trabajo compartido: modelo M/M/1 en SimPy, ventana en vivo, pruebas e informe. |
+| Gyna Yupanqui | Trabajo compartido: modelo M/M/1 en SimPy, ventana en vivo, pruebas e informe. |
+| Alejandro Padilla | Trabajo compartido: modelo M/M/1 en SimPy, ventana en vivo, pruebas e informe. |
 
 ## 1. Enunciado y objetivo
 
@@ -30,8 +31,7 @@ Simular un sistema de líneas de espera M/M/1 con Python y SimPy, y analizar el 
 
 | Herramienta | Uso |
 | --- | --- |
-| Agente de programación el Gentleman (Pi) con modelo Claude | Lectura de la guía, modelo SimPy, fórmulas teóricas, pruebas, gráficas y pantalla en vivo. |
-| <modelo / agente de otro integrante> | <para qué se usó> |
+| Agente de programación el Gentleman (Pi) con modelo Claude | Lectura de la guía, modelo SimPy, fórmulas teóricas, pruebas, gráficas, ventana en vivo e informe. |
 
 La IA ejecutó; las decisiones de modelo, formato y contenido las tomó el grupo en cada iteración.
 
@@ -41,12 +41,13 @@ La IA ejecutó; las decisiones de modelo, formato y contenido las tomó el grupo
 2. Modelo SimPy y métricas teóricas
 3. Arquitectura MVC
 4. Gráficas y pantalla en vivo
-5. <Título de la iteración del informe>
+5. Informe grupal
+6. Ventana en vivo con Matplotlib en lugar de HTML
 
 ## 4. Errores de la IA y correcciones
 
 - **Utilización invertida en la guía:** el fundamento teórico escribe la utilización como μ/λ; se usó ρ = λ/μ, que es lo que indica el pseudocódigo de la guía y lo que da valores menores que 1 en los tres escenarios.
-- <respuesta incorrecta> → <cómo se detectó y corrigió>
+- **Columna equivocada en la primera versión del informe:** la tabla de comparación tomó los valores de la animación de 60 minutos («Simulado ahora») y no los de la corrida de 20 000 minutos; se detectó al compararla con la tabla de la consola y se corrigió con los valores de semilla 42.
 
 ## 5. Arquitectura del código
 
@@ -59,17 +60,17 @@ codigo/simulacion_ape/
 │   ├── theory.py                # Fórmulas M/M/1 y condición de estabilidad λ < μ
 │   ├── analysis.py              # Métricas simuladas (en el tiempo y por cliente)
 │   ├── state.py                 # Estado del sistema en un instante
+│   ├── live.py                  # Corrida (λ, μ) lista para la pantalla en vivo
 │   └── simulation.py            # Corre un escenario y reúne teoría y simulación
 ├── view/                        # Presentación, sin cálculos del modelo
 │   ├── console_view.py          # Tabla comparativa en consola
 │   ├── chart_view.py            # Gráficas estáticas para el informe
-│   ├── html_view.py             # Pantalla en vivo con los registros de SimPy
-│   └── assets/                  # Plantilla HTML, lógica JS y tipografía
+│   └── live/                    # Pantalla en vivo: una ventana de Matplotlib (animación, tablero, gráficas)
 └── controller/
     └── simulation_controller.py # Opciones de línea de comandos y orquestación
 ```
 
-MVC separa los cálculos de la presentación: se puede cambiar un escenario en `model/config.py` sin tocar las gráficas, y probar el modelo sin generar ninguna figura. La pantalla en vivo no simula por su cuenta: reproduce los registros de SimPy, y una prueba comprueba que lo que muestra coincide con el modelo en Python. El detalle de opciones y controles está en [codigo/README.md](codigo/README.md).
+MVC separa los cálculos de la presentación: se puede cambiar un escenario en `model/config.py` sin tocar las gráficas, y probar el modelo sin generar ninguna figura. La pantalla en vivo es una ventana de Matplotlib con deslizadores de λ y μ; no simula por su cuenta: el controlador le entrega una función que pide al modelo una corrida con las tasas elegidas, y las pruebas comprueban que lo que muestra coincide con el modelo. El detalle de opciones y controles está en [codigo/README.md](codigo/README.md).
 
 ## 6. Ejecución
 
@@ -78,8 +79,8 @@ cd codigo
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m simulacion_ape         # tabla, gráficas en resultados/ y pantalla en vivo en el navegador
-pytest                           # 15 pruebas
+python -m simulacion_ape         # tabla, gráficas en resultados/ y ventana en vivo de Matplotlib
+pytest                           # 21 pruebas
 ```
 
 ## 7. Resultados

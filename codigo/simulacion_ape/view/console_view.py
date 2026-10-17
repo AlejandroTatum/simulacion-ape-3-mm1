@@ -37,3 +37,12 @@ def show_unstable(label: str, arrival_rate: float, service_rate: float) -> None:
 
 def show_message(message: str) -> None:
     print(message)
+
+
+def show_no_display() -> None:
+    print(
+        "No hay ventana gráfica disponible: Matplotlib usa un backend sin pantalla (Agg).\n"
+        "Instale Tk y vuelva a ejecutar: en Linux `sudo apt install python3-tk` (Debian/Ubuntu) o\n"
+        "`sudo pacman -S tk` (Arch); en Windows y macOS Tk ya viene con Python.\n"
+        "Mientras tanto, `--sin-animacion` muestra la tabla y guarda las gráficas."
+    )
