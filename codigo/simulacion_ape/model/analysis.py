@@ -1,4 +1,10 @@
-"""Métricas simuladas a partir de los registros de clientes."""
+"""Métricas simuladas a partir de los registros de clientes.
+
+Hay dos tipos de promedio:
+- L, Lq y ρ son promedios **en el tiempo**: cada valor se pondera por cuánto tiempo duró (área bajo la curva
+  de clientes dividida por el tiempo total).
+- W y Wq son promedios **por cliente**: se suma lo que esperó cada cliente y se divide entre cuántos fueron.
+"""
 
 from dataclasses import dataclass, replace
 
@@ -72,6 +78,7 @@ def _mean(values: list[float]) -> float:
 def simulated_metrics(customers: list[CustomerRecord], end_time: float) -> QueueMetrics:
     """ρ, L y Lq se promedian en el tiempo; W y Wq se promedian por cliente (NaN si aún no hay datos)."""
     trace = occupancy_trace(customers, end_time)
+    # ρ simulado = tiempo con la caja atendiendo / tiempo total.
     busy_time = sum(
         min(record.departure if record.departure is not None else end_time, end_time) - record.service_start
         for record in customers

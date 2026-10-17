@@ -59,17 +59,17 @@ codigo/simulacion_ape/
 │   ├── theory.py                # Fórmulas M/M/1 y condición de estabilidad λ < μ
 │   ├── analysis.py              # Métricas simuladas (en el tiempo y por cliente)
 │   ├── state.py                 # Estado del sistema en un instante
+│   ├── live.py                  # Corrida (λ, μ) lista para la pantalla en vivo
 │   └── simulation.py            # Corre un escenario y reúne teoría y simulación
 ├── view/                        # Presentación, sin cálculos del modelo
 │   ├── console_view.py          # Tabla comparativa en consola
 │   ├── chart_view.py            # Gráficas estáticas para el informe
-│   ├── html_view.py             # Pantalla en vivo con los registros de SimPy
-│   └── assets/                  # Plantilla HTML, lógica JS y tipografía
+│   └── live/                    # Pantalla en vivo: una ventana de Matplotlib (animación, tablero, gráficas)
 └── controller/
     └── simulation_controller.py # Opciones de línea de comandos y orquestación
 ```
 
-MVC separa los cálculos de la presentación: se puede cambiar un escenario en `model/config.py` sin tocar las gráficas, y probar el modelo sin generar ninguna figura. La pantalla en vivo no simula por su cuenta: reproduce los registros de SimPy, y una prueba comprueba que lo que muestra coincide con el modelo en Python. El detalle de opciones y controles está en [codigo/README.md](codigo/README.md).
+MVC separa los cálculos de la presentación: se puede cambiar un escenario en `model/config.py` sin tocar las gráficas, y probar el modelo sin generar ninguna figura. La pantalla en vivo es una ventana de Matplotlib con deslizadores de λ y μ; no simula por su cuenta: el controlador le entrega una función que pide al modelo una corrida con las tasas elegidas, y las pruebas comprueban que lo que muestra coincide con el modelo. El detalle de opciones y controles está en [codigo/README.md](codigo/README.md).
 
 ## 6. Ejecución
 
@@ -78,8 +78,8 @@ cd codigo
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m simulacion_ape         # tabla, gráficas en resultados/ y pantalla en vivo en el navegador
-pytest                           # 15 pruebas
+python -m simulacion_ape         # tabla, gráficas en resultados/ y ventana en vivo de Matplotlib
+pytest                           # 21 pruebas
 ```
 
 ## 7. Resultados

@@ -17,6 +17,11 @@ class Scenario:
     condition: str
 
     @property
+    def utilization(self) -> float:
+        """ρ = λ/μ: fracción del tiempo que la caja está ocupada."""
+        return self.arrival_rate / self.service_rate
+
+    @property
     def label(self) -> str:
         return f"Escenario {self.number}: {self.condition}"
 
